@@ -1,2 +1,13 @@
-spring.application:
-  name: modulith-products
+spring:
+  application.name: modulith-products
+
+  datasource:
+    username: root
+    password: password
+    url: jdbc:postgresql://localhost:5432/products
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
