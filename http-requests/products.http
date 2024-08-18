@@ -1,0 +1,5 @@
+### GET products
+GET http://localhost:8080/products?page=0&size=10
+
+### GET product
+GET http://localhost:8080/products/000001
