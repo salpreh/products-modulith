@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 
 public interface ProductReadUseCasePort {
-
   Optional<Product> getByBarcode(String barcode);
   Page<Product> getAll(int page, int size);
 }

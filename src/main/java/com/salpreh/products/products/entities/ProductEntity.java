@@ -1,5 +1,6 @@
 package com.salpreh.products.products.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -31,7 +32,7 @@ public class ProductEntity {
   private double purchasePrice;
   private double salePrice;
 
-  @ManyToMany
+  @ManyToMany(cascade = {CascadeType.REFRESH})
   @JoinTable(
     name = "products_suppliers",
     joinColumns = @JoinColumn(name = "product_barcode", referencedColumnName = "barcode"),

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +19,14 @@ public class ProductReadUseCase implements ProductReadUseCasePort {
   private final ProductMapper mapper;
 
   @Override
+  @Transactional(readOnly = true)
   public Optional<Product> getByBarcode(String barcode) {
     return productRepository.findById(barcode)
       .map(mapper::toModel);
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Page<Product> getAll(int page, int size) {
     return productRepository.findAll(PageRequest.of(page, size))
       .map(mapper::toModel);
