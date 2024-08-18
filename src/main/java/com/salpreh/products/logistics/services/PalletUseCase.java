@@ -6,6 +6,8 @@ import com.salpreh.products.logistics.models.Pallet;
 import com.salpreh.products.logistics.models.internal.Ean128Constants;
 import com.salpreh.products.logistics.models.internal.Ean128IA;
 import com.salpreh.products.logistics.models.internal.ProcessedIA;
+import com.salpreh.products.products.ProductReadUseCasePort;
+import com.salpreh.products.products.models.Product;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PalletUseCase implements PalletUseCasePort {
+
+  private final ProductReadUseCasePort productReadUseCase;
 
   @Override
   public Pallet decodeEan128(String ean) {
@@ -41,6 +45,9 @@ public class PalletUseCase implements PalletUseCasePort {
         iaIdx = 0;
       }
     }
+
+    if (iaIdx != 0)
+      throw new EanProcessingException("Unable to process unknown IA. Index: " + (ean.length() - iaIdx - 1));
 
     return processedIAs;
   }
@@ -96,7 +103,14 @@ public class PalletUseCase implements PalletUseCasePort {
     for (ProcessedIA ia : ias) {
       switch (ia.getIa()) {
         case PALLET_ID -> builder.id(ia.getData());
-        case PRODUCT_ID -> builder.productId(ia.getData());
+        case PRODUCT_ID -> {
+          String barcode = ia.getData();
+          Product product = productReadUseCase.getByBarcode(ia.getData())
+            .orElseThrow(() -> new EanProcessingException("EAN product id do not exists: " + barcode));
+
+          builder.productId(product.barcode());
+          builder.productName(product.name());
+        }
         case BATCH_ID -> builder.batchId(ia.getData());
         case PRODUCTION_DATE -> builder.productionDate(LocalDate.parse(ia.getData(), Ean128Constants.DT_FORMATTER));
         case WEIGHT -> builder.weight(Double.valueOf(ia.getData()));
