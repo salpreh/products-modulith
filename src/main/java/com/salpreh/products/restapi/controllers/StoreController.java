@@ -1,5 +1,6 @@
-package com.salpreh.products.stores.controllers;
+package com.salpreh.products.restapi.controllers;
 
+import com.salpreh.products.restapi.mappers.ApiMapper;
 import com.salpreh.products.stores.StoreReadUseCasePort;
 import com.salpreh.products.stores.models.Store;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreController {
 
   private final StoreReadUseCasePort storeReadUseCase;
+  private final ApiMapper mapper;
 
   @GetMapping("/{storeCode}")
   public ResponseEntity<Store> getStore(@PathVariable long storeCode) {
@@ -30,6 +32,8 @@ public class StoreController {
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size
   ) {
-    return ResponseEntity.ok(storeReadUseCase.getStores(page, size));
+    var stores = storeReadUseCase.getStores(page, size);
+
+    return ResponseEntity.ok(stores);
   }
 }

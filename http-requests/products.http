@@ -4,6 +4,9 @@ GET http://localhost:8080/products?page=0&size=10
 ### GET product
 GET http://localhost:8080/products/000001
 
+### GET product NOT FOUND
+GET http://localhost:8080/products/999999
+
 ### POST create product
 POST http://localhost:8080/products
 Content-Type: application/json
@@ -16,7 +19,7 @@ Content-Type: application/json
   "barcode": "000011",
   "imageUrl": "https://products.s3.aws.com/000011.jpg",
   "tags": ["postres", "arroz"],
-  "suppliers": [1, 2]
+  "suppliers": [1, 2, 10]
 }
 
 ### PUT update product

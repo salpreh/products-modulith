@@ -1,11 +1,12 @@
-package com.salpreh.products.products.controllers;
+package com.salpreh.products.restapi.controllers;
 
 import com.salpreh.products.products.ProductReadUseCasePort;
 import com.salpreh.products.products.ProductWriteUseCasePort;
 import com.salpreh.products.products.models.Product;
 import com.salpreh.products.products.models.commands.UpsertProductCommand;
+import com.salpreh.products.restapi.mappers.ApiMapper;
+import com.salpreh.products.restapi.models.ApiPage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,7 @@ public class ProductController {
 
   private final ProductReadUseCasePort productReadUseCase;
   private final ProductWriteUseCasePort productWriteUseCase;
+  private final ApiMapper mapper;
 
   @GetMapping("/{barcode}")
   public ResponseEntity<Product> getProduct(@PathVariable String barcode) {
@@ -34,11 +36,13 @@ public class ProductController {
   }
 
   @GetMapping
-  public ResponseEntity<Page<Product>> getProducts(
+  public ResponseEntity<ApiPage<Product>> getProducts(
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size
   ) {
-    return ResponseEntity.ok(productReadUseCase.getAll(page, size));
+    var products = mapper.toApiPage(productReadUseCase.getAll(page, size));
+
+    return ResponseEntity.ok(products);
   }
 
   @PostMapping
