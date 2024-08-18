@@ -3,3 +3,35 @@ GET http://localhost:8080/products?page=0&size=10
 
 ### GET product
 GET http://localhost:8080/products/000001
+
+### POST create product
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "name": "Arroz con leche",
+  "description": "Arroz con leche",
+  "purchasePrice": 5.5,
+  "sellingPrice": 6.8,
+  "barcode": "000011",
+  "imageUrl": "https://products.s3.aws.com/000011.jpg",
+  "tags": ["postres", "arroz"],
+  "suppliers": [1, 2]
+}
+
+### PUT update product
+PUT http://localhost:8080/products/000011
+Content-Type: application/json
+
+{
+  "name": "Arroz con leche",
+  "description": "Arroz con leche 100g",
+  "purchasePrice": 4.5,
+  "sellingPrice": 5.5,
+  "imageUrl": "https://products.s3.aws.com/acl-11.jpg",
+  "tags": ["postres"],
+  "suppliers": [1]
+}
+
+### DELETE product
+DELETE http://localhost:8080/products/000011
