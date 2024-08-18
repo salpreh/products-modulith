@@ -30,7 +30,7 @@ public class ProductController {
 
   @GetMapping("/{barcode}")
   public ResponseEntity<Product> getProduct(@PathVariable String barcode) {
-    return productReadUseCase.getByBarcode(barcode)
+    return productReadUseCase.getProduct(barcode)
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.notFound().build());
   }

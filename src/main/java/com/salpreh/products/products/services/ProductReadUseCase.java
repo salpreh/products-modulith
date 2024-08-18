@@ -20,7 +20,7 @@ public class ProductReadUseCase implements ProductReadUseCasePort {
 
   @Override
   @Transactional(readOnly = true)
-  public Optional<Product> getByBarcode(String barcode) {
+  public Optional<Product> getProduct(String barcode) {
     return productRepository.findById(barcode)
       .map(mapper::toModel);
   }

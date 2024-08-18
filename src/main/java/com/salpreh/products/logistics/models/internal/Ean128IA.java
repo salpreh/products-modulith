@@ -11,6 +11,9 @@ import lombok.Getter;
 public enum Ean128IA {
   PALLET_ID("00", 18, 18, true),
   PRODUCT_ID("01", 14, 14, true),
+  SUPPLIER_ID("412", 13, 13, true),
+  DELIVERY_SITE_ID("410", 13, 13, true),
+  QUANTITY("37", 1, 8, true),
   BATCH_ID("10", 1, 20, false),
   PRODUCTION_DATE("11", 6, 6, false),
   WEIGHT("310", 7, 7, false, true);
