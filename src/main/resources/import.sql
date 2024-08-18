@@ -1,3 +1,4 @@
+-- Products inserts
 INSERT INTO products(purchase_price, sale_price, barcode, description, image_url, name) VALUES(5.0, 6.5, '000001', 'Arrocete', 'http://image.com', 'Arroz de Valencia');
 INSERT INTO products(purchase_price, sale_price, barcode, description, image_url, name) VALUES(2.2, 2.6, '000002', 'Galletas', 'http://image.com', 'Galletas sin gluten');
 INSERT INTO products(purchase_price, sale_price, barcode, description, image_url, name) VALUES(1.0, 1.5, '000003', 'Leche', 'http://image.com', 'Leche de vaca');
@@ -20,3 +21,13 @@ INSERT INTO products_suppliers(supplier_id, product_barcode) VALUES (1, '000001'
 INSERT INTO products_suppliers(supplier_id, product_barcode) VALUES (2, '000001');
 INSERT INTO products_suppliers(supplier_id, product_barcode) VALUES (3, '000002');
 INSERT INTO products_suppliers(supplier_id, product_barcode) VALUES (3, '000003');
+
+-- Stores inserts
+INSERT INTO stores(code, name) VALUES (3000, 'Store 1');
+INSERT INTO stores(code, name) VALUES (3001, 'Store 2');
+INSERT INTO stores(code, name) VALUES (3002, 'Store 3');
+
+INSERT INTO store_stock(quantity, store_code, product_barcode) VALUES (50, 3000, '000001');
+INSERT INTO store_stock(quantity, store_code, product_barcode) VALUES (60, 3000, '000002');
+INSERT INTO store_stock(quantity, store_code, product_barcode) VALUES (70, 3000, '000003');
+INSERT INTO store_stock(quantity, store_code, product_barcode) VALUES (80, 3001, '000001');
