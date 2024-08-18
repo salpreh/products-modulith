@@ -2,10 +2,10 @@
 GET http://localhost:8080/products?page=0&size=10
 
 ### GET product
-GET http://localhost:8080/products/000001
+GET http://localhost:8080/products/00000000000001
 
 ### GET product NOT FOUND
-GET http://localhost:8080/products/999999
+GET http://localhost:8080/products/90000000000000
 
 ### POST create product
 POST http://localhost:8080/products

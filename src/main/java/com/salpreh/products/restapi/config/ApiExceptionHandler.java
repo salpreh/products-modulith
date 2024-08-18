@@ -1,5 +1,6 @@
 package com.salpreh.products.restapi.config;
 
+import com.salpreh.products.logistics.exceptions.EanProcessingException;
 import com.salpreh.products.products.exceptions.ProductNotFoundException;
 import com.salpreh.products.restapi.models.ApiErrorResponse;
 import javax.management.ServiceNotFoundException;
@@ -20,6 +21,12 @@ public class ApiExceptionHandler {
   @ExceptionHandler(ServiceNotFoundException.class)
   public ResponseEntity<ApiErrorResponse> handleServiceNotFoundException(ServiceNotFoundException ex) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
+      .body(toApiErrorResponse(ex));
+  }
+
+  @ExceptionHandler(EanProcessingException.class)
+  public ResponseEntity<ApiErrorResponse> handleEanProcessingException(EanProcessingException ex) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
       .body(toApiErrorResponse(ex));
   }
 
