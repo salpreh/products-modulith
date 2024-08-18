@@ -1,7 +1,7 @@
 -- Products inserts
-INSERT INTO products(purchase_price, sale_price, barcode, description, image_url, name) VALUES(5.0, 6.5, '000001', 'Arrocete', 'http://image.com', 'Arroz de Valencia');
-INSERT INTO products(purchase_price, sale_price, barcode, description, image_url, name) VALUES(2.2, 2.6, '000002', 'Galletas', 'http://image.com', 'Galletas sin gluten');
-INSERT INTO products(purchase_price, sale_price, barcode, description, image_url, name) VALUES(1.0, 1.5, '000003', 'Leche', 'http://image.com', 'Leche de vaca');
+INSERT INTO products(purchase_price, selling_price, barcode, description, image_url, name) VALUES(5.0, 6.5, '000001', 'Arrocete', 'http://image.com', 'Arroz de Valencia');
+INSERT INTO products(purchase_price, selling_price, barcode, description, image_url, name) VALUES(2.2, 2.6, '000002', 'Galletas', 'http://image.com', 'Galletas sin gluten');
+INSERT INTO products(purchase_price, selling_price, barcode, description, image_url, name) VALUES(1.0, 1.5, '000003', 'Leche', 'http://image.com', 'Leche de vaca');
 
 INSERT INTO products_tags(product_entity_barcode, tags) VALUES('000001', 'arroz');
 INSERT INTO products_tags(product_entity_barcode, tags) VALUES('000002', 'reposteria');

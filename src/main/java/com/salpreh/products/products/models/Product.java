@@ -8,7 +8,7 @@ public record Product(
   String description,
   String imageUrl,
   double purchasePrice,
-  double salePrice,
+  double sellingPrice,
   List<Supplier> suppliers,
   List<String> tags
 ) {

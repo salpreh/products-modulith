@@ -30,7 +30,7 @@ public class ProductEntity {
   private String description;
   private String imageUrl;
   private double purchasePrice;
-  private double salePrice;
+  private double sellingPrice;
 
   @ManyToMany(cascade = {CascadeType.REFRESH})
   @JoinTable(
