@@ -33,7 +33,7 @@ class Ean128DecoderTest {
   private StoreReadUseCasePort storeReadUseCase;
 
   @InjectMocks
-  private PalletUseCase palletUseCase;
+  private Ean128Decoder eanDecoder;
 
   @Test
   void givenValidEan_whenDecode_shouldProcessCorrectly() {
@@ -51,7 +51,7 @@ class Ean128DecoderTest {
       .willReturn(Optional.of(createStore(storeId, "store")));
 
     // when
-    Pallet pallet = palletUseCase.decodeEan128(ean);
+    Pallet pallet = eanDecoder.decodeEan128(ean);
 
     // then
     assertEquals("123456789123456789", pallet.getId());
@@ -73,7 +73,7 @@ class Ean128DecoderTest {
     String ean = "0112345678912345";
 
     // when
-    Executable decode = () -> palletUseCase.decodeEan128(ean);
+    Executable decode = () -> eanDecoder.decodeEan128(ean);
 
     // then
     assertThrows(EanProcessingException.class, decode);
@@ -87,7 +87,7 @@ class Ean128DecoderTest {
       .willReturn(Optional.empty());
 
     // when
-    Executable decode = () -> palletUseCase.decodeEan128(ean);
+    Executable decode = () -> eanDecoder.decodeEan128(ean);
 
     // then
     assertThrows(EanProcessingException.class, decode);
