@@ -1,6 +1,5 @@
 package com.salpreh.products.logistics.services;
 
-import com.salpreh.products.logistics.PalletUseCasePort;
 import com.salpreh.products.logistics.exceptions.EanProcessingException;
 import com.salpreh.products.logistics.models.Pallet;
 import com.salpreh.products.logistics.models.internal.Ean128Constants;
@@ -22,15 +21,38 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PalletUseCase implements PalletUseCasePort {
-
+public class Ean128Decoder {
   private final ProductReadUseCasePort productReadUseCase;
   private final StoreReadUseCasePort storeReadUseCase;
   private final SupplierReadUseCasePort supplierReadUseCase;
 
-  @Override
-  public Pallet decodeEan128(String ean) {
-    return eanDecoder.decodeEan128(ean);
+  public Pallet decodeEan128(String ean) throws EanProcessingException {
+    List<ProcessedIA> processedIAs = process(ean);
+    if (!validateRequired(processedIAs))
+      throw new EanProcessingException("Missing required IAs in EAN code");
+
+    return createPallet(processedIAs);
+  }
+
+  private List<ProcessedIA> process(String ean) {
+    char[] currentIA = new char[128];
+    char[] eanChars = ean.toCharArray();
+    int iaIdx = 0;
+    List<ProcessedIA> processedIAs = new ArrayList<>();
+    for (int eanIdx = 0; eanIdx < ean.length();) {
+      currentIA[iaIdx++] = eanChars[eanIdx++];
+      ProcessedIA processedIA = process(new String(currentIA, 0, iaIdx), ean, eanIdx);
+      if (processedIA.isProcessed()) {
+        processedIAs.add(processedIA);
+        eanIdx = processedIA.getNewIndex();
+        iaIdx = 0;
+      }
+    }
+
+    if (iaIdx != 0)
+      throw new EanProcessingException("Unable to process unknown IA. Index: " + (ean.length() - iaIdx - 1));
+
+    return processedIAs;
   }
 
   private ProcessedIA process(String ia, String ean, int currentIdx) {
