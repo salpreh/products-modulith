@@ -1,108 +1,96 @@
 package com.salpreh.products.logistics.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
-import com.salpreh.products.logistics.exceptions.EanProcessingException;
+import com.salpreh.products.logistics.mappers.PalletMapper;
 import com.salpreh.products.logistics.models.Pallet;
-import com.salpreh.products.products.ProductReadUseCasePort;
-import com.salpreh.products.products.SupplierReadUseCasePort;
-import com.salpreh.products.products.models.Product;
-import com.salpreh.products.products.models.Supplier;
-import com.salpreh.products.stores.StoreReadUseCasePort;
-import com.salpreh.products.stores.models.Store;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import com.salpreh.products.logistics.models.events.PalletCreated;
+import com.salpreh.products.logistics.repositories.PalletRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentCaptor;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 class PalletUseCaseTest {
 
-  @Mock
-  private ProductReadUseCasePort productReadUseCase;
-  @Mock
-  private SupplierReadUseCasePort supplierReadUseCase;
-  @Mock
-  private StoreReadUseCasePort storeReadUseCase;
+  @MockBean
+  private Ean128Decoder eanDecoder;
+  @MockBean
+  private PalletRepository palletRepository;
+  @MockBean
+  private ApplicationEventPublisher eventPublisher;
 
-  @InjectMocks
+  private PalletMapper mapper = Mappers.getMapper(PalletMapper.class);
+
   private PalletUseCase palletUseCase;
+
+  @BeforeEach
+  void setUp() {
+    palletUseCase = new PalletUseCase(eanDecoder, palletRepository, mapper, eventPublisher);
+  }
 
   @Test
   void givenValidEan_whenDecode_shouldProcessCorrectly() {
     // given
-    String productCode = "12345678912345";
-    Long supplierId = 55L;
-    Long storeId = 1L;
-    String ean = "0012345678912345678901123456789123451012*112201013101000010412000000000005541000000000000013735*";
-
-    given(productReadUseCase.getProduct(productCode))
-      .willReturn(Optional.of(createProduct(productCode, "product")));
-    given(supplierReadUseCase.getSupplier(supplierId))
-      .willReturn(Optional.of(createSupplier(supplierId, "supplier")));
-    given(storeReadUseCase.getStore(storeId))
-      .willReturn(Optional.of(createStore(storeId, "store")));
+    String ean = "ean";
+    Pallet pallet = createPallet();
+    given(eanDecoder.decodeEan128(ean)).willReturn(pallet);
 
     // when
-    Pallet pallet = palletUseCase.decodeEan128(ean);
+    Pallet decodedPallet = palletUseCase.decodeEan128(ean);
 
     // then
-    assertEquals("123456789123456789", pallet.getId());
-    assertEquals(productCode, pallet.getProductId());
-    assertEquals("product", pallet.getProductName());
-    assertEquals(supplierId, pallet.getSupplierId());
-    assertEquals("supplier", pallet.getSupplierName());
-    assertEquals(storeId, pallet.getStoreId());
-    assertEquals("store", pallet.getStoreName());
-    assertEquals("12", pallet.getBatchId());
-    assertEquals(LocalDate.parse("2022-01-01"), pallet.getProductionDate());
-    assertEquals(1000.0, pallet.getWeight());
-    assertEquals(35, pallet.getUnits());
+    assertEquals(pallet, decodedPallet);
   }
 
   @Test
-  void givenInvalidEan_whenMissingRequiredIa_shouldThrowException() {
+  void givenCreatePallet_whenCreate_shouldProcessCorrectly() {
     // given
-    String ean = "0112345678912345";
+    String ean = "ean";
+    Pallet pallet = createPallet();
+    given(eanDecoder.decodeEan128(ean)).willReturn(pallet);
+    given(palletRepository.save(any())).willReturn(mapper.toEntity(pallet));
 
     // when
-    Executable decode = () -> palletUseCase.decodeEan128(ean);
+    Pallet createdPallet = palletUseCase.createPallet(ean);
 
     // then
-    assertThrows(EanProcessingException.class, decode);
+    assertEquals(pallet, createdPallet);
+
+    ArgumentCaptor<PalletCreated> palletCreatedAC = ArgumentCaptor.forClass(PalletCreated.class);
+    verify(eventPublisher).publishEvent(palletCreatedAC.capture());
+
+    assertPalletCreated(pallet, palletCreatedAC.getValue());
   }
 
-  @Test
-  void givenInvalidEan_whenProductDoNotExists_shouldThrowException() {
-    // given
-    String ean = "0012345678912345678901123456789123451012*112201013101000010412000000000005541000000000000013735*";
-    given(productReadUseCase.getProduct(anyString()))
-      .willReturn(Optional.empty());
-
-    // when
-    Executable decode = () -> palletUseCase.decodeEan128(ean);
-
-    // then
-    assertThrows(EanProcessingException.class, decode);
+  void assertPalletCreated(Pallet pallet, PalletCreated palletCreated) {
+    assertEquals(pallet.getId(), palletCreated.getId());
+    assertEquals(pallet.getProductId(), palletCreated.getProductId());
+    assertEquals(pallet.getSupplierId(), palletCreated.getSupplierId());
+    assertEquals(pallet.getStoreId(), palletCreated.getStoreId());
+    assertEquals(pallet.getBatchId(), palletCreated.getBatchId());
+    assertEquals(pallet.getProductionDate(), palletCreated.getProductionDate());
+    assertEquals(pallet.getWeight(), palletCreated.getWeight());
+    assertEquals(pallet.getUnits(), palletCreated.getUnits());
   }
 
-  private Product createProduct(String barcode, String name) {
-    return new Product(barcode, name, null, null, 0, 0, List.of(), List.of());
-  }
-
-  private Store createStore(Long id, String name) {
-    return new Store(id, name, List.of());
-  }
-
-  private Supplier createSupplier(Long id, String name) {
-    return new Supplier(id, name, null, null);
+  private Pallet createPallet() {
+    return Pallet.builder()
+      .id("id")
+      .productId("productId")
+      .productName("productName")
+      .supplierId(1L)
+      .supplierName("supplierName")
+      .storeId(1L)
+      .storeName("storeName")
+      .build();
   }
 }

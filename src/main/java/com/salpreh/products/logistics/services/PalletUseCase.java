@@ -31,7 +31,7 @@ public class PalletUseCase implements PalletUseCasePort {
     Pallet pallet = eanDecoder.decodeEan128(ean);
 
     PalletEntity palletEntity = mapper.toEntity(pallet);
-    pallet = mapper.toModel(palletRepository.save(palletEntity));
+    palletRepository.save(palletEntity);
 
     eventPublisher.publishEvent(mapper.toEvent(pallet));
 
