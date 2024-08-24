@@ -45,6 +45,8 @@ public class StoreStockEntity {
   }
 
   @Data
+  @AllArgsConstructor(staticName = "of")
+  @NoArgsConstructor
   @Embeddable
   public static class StoreStockPk implements Serializable {
     @Column(name = "store_code")

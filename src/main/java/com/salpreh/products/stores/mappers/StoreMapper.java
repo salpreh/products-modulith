@@ -1,5 +1,6 @@
 package com.salpreh.products.stores.mappers;
 
+import com.salpreh.products.logistics.models.events.PalletCreated;
 import com.salpreh.products.stores.entities.StoreEntity;
 import com.salpreh.products.stores.entities.StoreStockEntity;
 import com.salpreh.products.stores.models.Store;
@@ -19,4 +20,9 @@ public interface StoreMapper {
 
   @InheritInverseConfiguration
   StoreStockEntity toEntity(StoreStock src);
+
+  @Mapping(target = "storeCode", source = "storeId")
+  @Mapping(target = "productBarcode", source = "productId")
+  @Mapping(target = "quantity", constant = "0L")
+  StoreStock toModelEmpty(PalletCreated src);
 }

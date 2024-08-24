@@ -31,4 +31,9 @@ public class ProductReadUseCase implements ProductReadUseCasePort {
     return productRepository.findAll(PageRequest.of(page, size))
       .map(mapper::toModel);
   }
+
+  @Override
+  public boolean exists(String barcode) {
+    return productRepository.existsById(barcode);
+  }
 }
