@@ -5,4 +5,5 @@ import com.salpreh.products.logistics.models.Pallet;
 public interface PalletUseCasePort {
 
   Pallet decodeEan128(String ean);
+  Pallet createPallet(String ean);
 }
