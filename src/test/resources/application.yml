@@ -1,0 +1,19 @@
+spring:
+  application.name: modulith-products
+
+  datasource:
+    username: sa
+    password:
+    url: jdbc:h2:mem:products
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+management:
+  tracing:
+    sampling.probability: 1
+
+logging:
+  level:
+    org.springframework.modulith: debug

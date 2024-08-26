@@ -1,19 +1,18 @@
 package com.salpreh.products.logistics.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.salpreh.products.logistics.services.utils.tests.ModelFaker.createProduct;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static com.salpreh.products.logistics.services.utils.tests.ModelFaker.*;
 
 import com.salpreh.products.logistics.exceptions.EanProcessingException;
 import com.salpreh.products.logistics.models.Pallet;
 import com.salpreh.products.products.ProductReadUseCasePort;
 import com.salpreh.products.products.SupplierReadUseCasePort;
-import com.salpreh.products.products.models.Product;
-import com.salpreh.products.products.models.Supplier;
 import com.salpreh.products.stores.StoreReadUseCasePort;
-import com.salpreh.products.stores.models.Store;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -91,17 +90,5 @@ class Ean128DecoderTest {
 
     // then
     assertThrows(EanProcessingException.class, decode);
-  }
-
-  private Product createProduct(String barcode, String name) {
-    return new Product(barcode, name, null, null, 0, 0, List.of(), List.of());
-  }
-
-  private Store createStore(Long id, String name) {
-    return new Store(id, name, List.of());
-  }
-
-  private Supplier createSupplier(Long id, String name) {
-    return new Supplier(id, name, null, null);
   }
 }
