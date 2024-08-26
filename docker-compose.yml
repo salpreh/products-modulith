@@ -8,3 +8,7 @@ services:
       POSTGRES_DB: products
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
+  tracing:
+    image: openzipkin/zipkin:latest
+    ports:
+      - '9411:9411'
