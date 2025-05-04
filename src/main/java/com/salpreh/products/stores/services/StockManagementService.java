@@ -9,6 +9,7 @@ import com.salpreh.products.stores.repositories.StoreRepository;
 import com.salpreh.products.stores.repositories.StoreStockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -23,8 +24,7 @@ public class StockManagementService {
   private final ProductReadUseCasePort productReadUseCase;
   private final StoreMapper mapper;
 
-  @Async
-  @TransactionalEventListener
+  @ApplicationModuleListener
   public void managePalletStock(StockUpdateEvent stockUpdate) {
     if (!isValid(stockUpdate)) return;
 

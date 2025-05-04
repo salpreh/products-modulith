@@ -1,5 +1,6 @@
 package com.salpreh.products.logistics.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.modulith.test.ApplicationModuleTest;
+import org.springframework.modulith.test.PublishedEvents;
 import org.springframework.modulith.test.Scenario;
 
 @ApplicationModuleTest
@@ -106,6 +108,38 @@ class PalletUseCaseModuleTest {
         assertEquals(supplier.id(), p.getSupplierId());
         assertEquals(product.barcode(), p.getProductId());
       });
+  }
+
+  /**
+   * Another way of write {@link #givenAvailableResources_whenCreatePallet_shouldEmmitEvent}
+   * @param events Enable access to published events
+   */
+  @Test
+  void givenAvailableResources_whenCreatePallet_shouldEmmitEvent2(PublishedEvents events) {
+    // given
+    String ean = "0012345678912345678901123456789123451012*112201013101000010412000000000000241000000000000013735*";
+    Store store = ModelFaker.createStore(1L, "store");
+    Supplier supplier = ModelFaker.createSupplier(2L, "supplier");
+    Product product = ModelFaker.createProduct("12345678912345", "product");
+
+    given(storeReadUseCase.getStore(1L)).willReturn(Optional.of(store));
+    given(supplierReadUseCase.getSupplier(2L)).willReturn(Optional.of(supplier));
+    given(productReadUseCase.getProduct("12345678912345")).willReturn(Optional.of(product));
+
+    // when
+    palletUseCase.createPallet(ean);
+
+    // then
+    var createdEvents = events.ofType(PalletCreated.class);
+    assertThat(createdEvents).hasSize(1);
+
+    PalletCreated event = createdEvents.iterator().next();
+    assertThat(event).satisfies(e -> {
+      assertEquals("123456789123456789", e.getId());
+      assertEquals(store.code(), e.getStoreId());
+      assertEquals(supplier.id(), e.getSupplierId());
+      assertEquals(product.barcode(), e.getProductId());
+    });
   }
 
   private void assertPalletReferences(Store expectedStore, Supplier expectedSupplier, Product expectedProduct, Pallet pallet) {
