@@ -12,6 +12,18 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      bootstrap-servers: ${spring.kafka.bootstrap-servers}
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: com.salpreh.products.*
+    producer:
+      bootstrap-servers: ${spring.kafka.bootstrap-servers}
+      properties:
+        spring.json.trusted.packages: com.salpreh.products.*
+
 management:
   tracing:
     sampling.probability: 1
@@ -22,3 +34,8 @@ management:
 
   endpoints:
     web.exposure.include: 'health,info,metrics,prometheus,modulith'
+
+products-service:
+  externalized-events:
+    targets:
+      pallet-created: "products.logistics.pallet-created"
