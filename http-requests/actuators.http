@@ -1,0 +1,5 @@
+### GET actuators
+GET http://localhost:8080/actuator
+
+### GET modulith actuator
+GET http://localhost:8080/actuator/modulith
