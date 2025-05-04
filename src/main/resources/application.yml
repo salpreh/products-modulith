@@ -15,3 +15,10 @@ spring:
 management:
   tracing:
     sampling.probability: 1
+  otlp:
+    metrics:
+      export:
+        url: http://localhost:4317/v1/metrics
+
+  endpoints:
+    web.exposure.include: 'health,info,metrics,prometheus,modulith'
