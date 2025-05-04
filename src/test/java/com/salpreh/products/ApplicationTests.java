@@ -11,7 +11,11 @@ import org.springframework.modulith.docs.Documenter;
 @SpringBootTest
 class ApplicationTests {
 
-  private ApplicationModules modules = ApplicationModules.of(Application.class, JavaClass.Predicates.resideInAPackage("com.salpreh.products.restapi.."));
+  private ApplicationModules modules = ApplicationModules.of(
+    Application.class,
+    JavaClass.Predicates.resideInAPackage("com.salpreh.products.restapi..")
+      .and(JavaClass.Predicates.resideInAPackage("com.salpreh.products.core.."))
+  );
 
 	@Test
 	void contextLoads() {

@@ -5,10 +5,12 @@ import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Value;
 import org.jmolecules.event.annotation.DomainEvent;
+import org.jmolecules.event.annotation.Externalized;
 
 @Value
 @Builder
 @DomainEvent
+@Externalized
 public class PalletCreated implements StockUpdateEvent {
   private String id;
   private String productId;
