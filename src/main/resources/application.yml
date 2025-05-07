@@ -24,6 +24,10 @@ spring:
       properties:
         spring.json.trusted.packages: com.salpreh.products.*
 
+  modulith:
+    events:
+      republish-outstanding-events-on-restart: false
+
 management:
   tracing:
     sampling.probability: 1
