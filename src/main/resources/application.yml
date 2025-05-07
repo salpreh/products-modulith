@@ -12,6 +12,10 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  modulith:
+    events:
+      republish-outstanding-events-on-restart: false
+
 management:
   tracing:
     sampling.probability: 1
@@ -22,3 +26,4 @@ management:
 
   endpoints:
     web.exposure.include: 'health,info,metrics,prometheus,modulith'
+
